@@ -52,3 +52,20 @@
         <input type="submit" value="제출">
 </body>
 </html>
+
+# mushroom2
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>우리는 <strong>먼가 작고 기가막힌 뚱땡이</strong> 를 알아야 합니다.</p>
+    <p>이 단어는 <b>굵게</b> 표시됩니다.</p>
+    <span><em>이 부분</em>은 강조되어 표시됩니다.</span>
+    <span><i>이 부분</i>은 이탤릭체로 표시됩니다.</span>
+</body>
+</html>
