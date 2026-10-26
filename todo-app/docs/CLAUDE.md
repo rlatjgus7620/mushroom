@@ -32,7 +32,12 @@
 - src/components/ : 화면 컴포넌트
 - src/lib/ : 서버 로직, DB
 - src/types/ : 공유 타입
+- __tests__/api/, __tests__/components/ : 테스트 (파일 이름은 `*.test.ts(x)`)
 - docs/ : 명세 문서
+
+## import 규칙
+- `@/components/*`, `@/lib/*`, `@/types/*` 별칭을 쓴다 (예: `import { Todo } from "@/types/todo"`)
+- 같은 폴더 안의 파일만 상대 경로(`./`)로 불러온다
 
 ## 반드시 참고할 문서
 - docs/PRD.md, docs/TRD.md, docs/DATA_MODEL.md
