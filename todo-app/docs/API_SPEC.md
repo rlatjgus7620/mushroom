@@ -7,6 +7,9 @@
 
 - **적용 버전**: v0.2부터 사용한다. (v0.1은 API 없이 화면에서만 동작)
 - **기본 경로**: `/api/todos`
+- **서버**: FastAPI (`http://localhost:8000`). 화면은 Next.js를 거쳐 같은 경로로 요청한다. (TRD 3장)
+- **자동 API 문서**: FastAPI 서버를 띄우면 `http://localhost:8000/docs`에서 API를 직접 눌러 볼 수 있다.
+- **FastAPI 기본 동작과 다른 점**: 검증 실패는 FastAPI 기본값(`422`) 대신 `400`과 아래 1.2 형식으로 돌려준다. 경로의 `{id}`는 문자열로 받아, 형식이 틀린 id도 `404`로 처리한다. (TRD 7.4)
 - **데이터 형식**: 요청과 응답 본문은 JSON이다. 본문이 있는 요청은 `Content-Type: application/json` 헤더를 붙인다.
 - **인증**: 없음 (로그인은 PRD 범위 밖)
 - **성공 응답**: 데이터를 감싸지 않고 그대로 돌려준다. (`Todo` 또는 `Todo[]`)
@@ -67,8 +70,8 @@ DATA_MODEL.md의 `Todo` 타입과 같다.
 |------|------|------|------|
 | 목록 조회 (F-02) | `GET /api/todos` | `200` | `500` |
 | 추가 (F-01) | `POST /api/todos` | `201` | `400`, `500` |
-| 완료 전환 (F-03) | `PATCH /api/todos/:id` | `200` | `400`, `404`, `500` |
-| 삭제 (F-04) | `DELETE /api/todos/:id` | `204` | `404`, `500` |
+| 완료 전환 (F-03) | `PATCH /api/todos/{id}` | `200` | `400`, `404`, `500` |
+| 삭제 (F-04) | `DELETE /api/todos/{id}` | `204` | `404`, `500` |
 
 ---
 
@@ -176,7 +179,7 @@ Content-Type: application/json
 
 ---
 
-## 5. 완료 전환 - `PATCH /api/todos/:id` (F-03)
+## 5. 완료 전환 - `PATCH /api/todos/{id}` (F-03)
 
 할 일의 완료 여부를 보낸 값으로 바꾼다. 같은 값을 다시 보내도 오류가 아니며 결과도 같다.
 
@@ -236,7 +239,7 @@ Content-Type: application/json
 
 ---
 
-## 6. 삭제 - `DELETE /api/todos/:id` (F-04)
+## 6. 삭제 - `DELETE /api/todos/{id}` (F-04)
 
 할 일을 삭제한다.
 

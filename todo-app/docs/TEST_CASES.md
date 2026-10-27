@@ -5,10 +5,12 @@
 
 ## 1. 공통 사항
 
-- **도구**: Jest + React Testing Library (CLAUDE.md)
+- **도구**: API는 pytest + FastAPI TestClient, 컴포넌트는 Jest + React Testing Library (CLAUDE.md)
+- **위치**: API 테스트는 `backend/tests/test_*.py`, 컴포넌트 테스트는 `__tests__/components/*.test.tsx`
 - **ID 규칙**: API 테스트는 `API-xx`, 컴포넌트 테스트는 `CMP-xx`
-- **API 테스트**: `app/api/todos`의 라우트 함수를 직접 호출해 응답을 확인한다. 테스트마다 데이터를 비운 상태에서 시작한다.
-  - "서버 오류" 상황은 `src/lib/`의 DB 함수가 실패하도록 흉내 내서(mock) 만든다.
+- **API 테스트**: FastAPI 서버를 띄우지 않고 TestClient로 요청을 보내 응답을 확인한다. 테스트마다 데이터를 비운 상태에서 시작한다.
+  - v0.3부터는 개발용과 분리된 테스트용 PostgreSQL DB를 쓴다.
+  - "서버 오류" 상황은 FastAPI의 의존성 바꿔치기(dependency override)로 DB 함수가 실패하게 만든다.
 - **컴포넌트 테스트**: `fetch`를 흉내 내서(mock) 서버 응답을 정한다. 요소는 화면에 보이는 문구와 접근성 이름(예: "우유 사기 완료")으로 찾는다.
 - **적용 버전**: API 테스트와 `TodoApp`의 로딩·오류 테스트는 v0.2부터 쓴다. `TodoForm`, `TodoList`, `TodoItem` 테스트는 v0.1부터 쓴다.
 - 테스트를 삭제하거나 skip하지 않는다.
@@ -72,47 +74,47 @@
 | API-36 | POST → GET | API-30 ~ API-35 요청 뒤 목록 조회 | 아무것도 저장되지 않았다 |
 | API-37 | POST /api/todos | DB 함수가 실패함 | `500`, `INTERNAL_ERROR` |
 
-### 2.4 완료 전환 `PATCH /api/todos/:id` (F-03)
+### 2.4 완료 전환 `PATCH /api/todos/{id}` (F-03)
 
 **정상**
 
 | ID | 대상 | 상황 | 기대 결과 |
 |------|------|------|------|
-| API-40 | PATCH /api/todos/:id | 할 일 A에 `{ "completed": true }` | `200`, `completed: true`인 A. `id`, `title`, `createdAt`은 그대로 |
-| API-41 | PATCH /api/todos/:id | 할 일 B에 `{ "completed": false }` | `200`, `completed: false`인 B |
-| API-42 | PATCH /api/todos/:id | 할 일 B(이미 완료)에 `{ "completed": true }` | `200`, `completed: true` (같은 값이어도 오류 아님) |
+| API-40 | PATCH /api/todos/{id} | 할 일 A에 `{ "completed": true }` | `200`, `completed: true`인 A. `id`, `title`, `createdAt`은 그대로 |
+| API-41 | PATCH /api/todos/{id} | 할 일 B에 `{ "completed": false }` | `200`, `completed: false`인 B |
+| API-42 | PATCH /api/todos/{id} | 할 일 B(이미 완료)에 `{ "completed": true }` | `200`, `completed: true` (같은 값이어도 오류 아님) |
 | API-43 | PATCH → GET | 전환한 뒤 목록 조회 | 바뀐 값이 유지되고, 목록 순서는 바뀌지 않는다 |
-| API-44 | PATCH /api/todos/:id | `{ "completed": true, "title": "바꿈" }` | `200`, `title`은 바뀌지 않는다 (보낸 값 무시) |
+| API-44 | PATCH /api/todos/{id} | `{ "completed": true, "title": "바꿈" }` | `200`, `title`은 바뀌지 않는다 (보낸 값 무시) |
 
 **에러**
 
 | ID | 대상 | 상황 | 기대 결과 |
 |------|------|------|------|
-| API-50 | PATCH /api/todos/:id | 본문이 올바른 JSON이 아님 | `400`, `VALIDATION_ERROR`, "요청 형식이 올바르지 않습니다." |
-| API-51 | PATCH /api/todos/:id | `{}` (`completed` 없음) | `400`, `VALIDATION_ERROR`, "완료 여부 값이 올바르지 않습니다." |
-| API-52 | PATCH /api/todos/:id | `{ "completed": "true" }` (문자열) | `400`, `VALIDATION_ERROR`, "완료 여부 값이 올바르지 않습니다." |
-| API-53 | PATCH /api/todos/:id | 없는 id에 `{ "completed": true }` | `404`, `NOT_FOUND`, "할 일을 찾을 수 없습니다." |
-| API-54 | PATCH /api/todos/:id | 잘못된 id(`abc`)에 `{ "completed": true }` | `404`, `NOT_FOUND` |
-| API-55 | PATCH /api/todos/:id | 없는 id에 `{}` (본문도 잘못됨) | `400`, `VALIDATION_ERROR` (본문 검사가 먼저) |
-| API-56 | PATCH /api/todos/:id | DB 함수가 실패함 | `500`, `INTERNAL_ERROR` |
+| API-50 | PATCH /api/todos/{id} | 본문이 올바른 JSON이 아님 | `400`, `VALIDATION_ERROR`, "요청 형식이 올바르지 않습니다." |
+| API-51 | PATCH /api/todos/{id} | `{}` (`completed` 없음) | `400`, `VALIDATION_ERROR`, "완료 여부 값이 올바르지 않습니다." |
+| API-52 | PATCH /api/todos/{id} | `{ "completed": "true" }` (문자열) | `400`, `VALIDATION_ERROR`, "완료 여부 값이 올바르지 않습니다." |
+| API-53 | PATCH /api/todos/{id} | 없는 id에 `{ "completed": true }` | `404`, `NOT_FOUND`, "할 일을 찾을 수 없습니다." |
+| API-54 | PATCH /api/todos/{id} | 잘못된 id(`abc`)에 `{ "completed": true }` | `404`, `NOT_FOUND` |
+| API-55 | PATCH /api/todos/{id} | 없는 id에 `{}` (본문도 잘못됨) | `400`, `VALIDATION_ERROR` (본문 검사가 먼저) |
+| API-56 | PATCH /api/todos/{id} | DB 함수가 실패함 | `500`, `INTERNAL_ERROR` |
 
-### 2.5 삭제 `DELETE /api/todos/:id` (F-04)
+### 2.5 삭제 `DELETE /api/todos/{id}` (F-04)
 
 **정상**
 
 | ID | 대상 | 상황 | 기대 결과 |
 |------|------|------|------|
-| API-60 | DELETE /api/todos/:id | 할 일 A 삭제 | `204`, 응답 본문 없음 |
+| API-60 | DELETE /api/todos/{id} | 할 일 A 삭제 | `204`, 응답 본문 없음 |
 | API-61 | DELETE → GET | A 삭제 뒤 목록 조회 | 목록에 A가 없고 B는 남아 있다 |
 
 **에러**
 
 | ID | 대상 | 상황 | 기대 결과 |
 |------|------|------|------|
-| API-70 | DELETE /api/todos/:id | 같은 할 일을 두 번 삭제 | 두 번째 요청은 `404`, `NOT_FOUND` |
-| API-71 | DELETE /api/todos/:id | 없는 id | `404`, `NOT_FOUND`, "할 일을 찾을 수 없습니다." |
-| API-72 | DELETE /api/todos/:id | 잘못된 id(`abc`) | `404`, `NOT_FOUND` |
-| API-73 | DELETE /api/todos/:id | DB 함수가 실패함 | `500`, `INTERNAL_ERROR` |
+| API-70 | DELETE /api/todos/{id} | 같은 할 일을 두 번 삭제 | 두 번째 요청은 `404`, `NOT_FOUND` |
+| API-71 | DELETE /api/todos/{id} | 없는 id | `404`, `NOT_FOUND`, "할 일을 찾을 수 없습니다." |
+| API-72 | DELETE /api/todos/{id} | 잘못된 id(`abc`) | `404`, `NOT_FOUND` |
+| API-73 | DELETE /api/todos/{id} | DB 함수가 실패함 | `500`, `INTERNAL_ERROR` |
 
 ### 2.6 데이터 유지 (F-05)
 

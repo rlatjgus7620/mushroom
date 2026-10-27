@@ -21,18 +21,20 @@
 - v1.0 배포
 
 ## 기술 스택
-- Next.js 15 (App Router), React 19, TypeScript (strict)
-- Tailwind CSS
-- DB: MySQL 8 + Drizzle ORM
-- 검증: Zod
-- 테스트: Jest + React Testing Library
+- 화면: Next.js 15 (App Router), React 19, TypeScript (strict), Tailwind CSS, Zod
+- 서버: Python 3.12, FastAPI, Uvicorn, Pydantic v2
+- DB: PostgreSQL 16 + SQLAlchemy 2.0 + Alembic (드라이버: psycopg 3)
+- 테스트: 화면은 Jest + React Testing Library, API는 pytest + FastAPI TestClient
+- 개발 중 `/api/*` 요청은 Next.js가 FastAPI(localhost:8000)로 넘긴다 (TRD 3장)
 
 ## 폴더 구조
-- app/ : 페이지와 API 라우트
+- app/ : 페이지 (API 라우트는 두지 않는다)
 - src/components/ : 화면 컴포넌트
-- src/lib/ : 서버 로직, DB
-- src/types/ : 공유 타입
-- __tests__/api/, __tests__/components/ : 테스트 (파일 이름은 `*.test.ts(x)`)
+- src/lib/ : 화면용 함수 (API 호출, Zod 검증 규칙)
+- src/types/ : 화면 타입
+- __tests__/components/ : 화면 테스트 (파일 이름은 `*.test.ts(x)`)
+- backend/app/ : FastAPI 앱 (라우터, Pydantic 스키마, DB 모델, DB 연결)
+- backend/tests/ : API 테스트 (파일 이름은 `test_*.py`)
 - docs/ : 명세 문서
 
 ## import 규칙
@@ -45,12 +47,14 @@
 
 ## 규칙
 - 명세에 없는 기능을 임의로 추가하지 말 것
-- any 타입 금지
+- any 타입 금지 (TypeScript), 함수에는 타입 힌트를 붙일 것 (Python)
 - 한 번에 한 가지 기능만 작업하고, 끝나면 무엇을 바꿨는지 요약할 것
 - 테스트를 삭제하거나 skip하지 말 것
-- console.log는 디버깅 후 제거할 것
+- console.log와 print는 디버깅 후 제거할 것
 - 초보자가 이해할 수 있게 주석은 한국어로 짧게
 
 ## 자주 쓰는 명령
-- 개발서버: npm run dev
-- 테스트: npm test
+- 화면 개발서버: npm run dev
+- 화면 테스트: npm test
+- API 개발서버 (backend/ 에서): uvicorn app.main:app --reload --port 8000
+- API 테스트 (backend/ 에서): pytest

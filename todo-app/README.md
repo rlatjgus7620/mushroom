@@ -2,7 +2,7 @@
 
 혼자 쓰는 간단한 할 일 목록 웹 앱입니다. (초보자 학습용)
 
-> 현재 상태: **명세 문서 작성 완료, 개발 시작 전**
+> 현재 상태: **화면(Next.js) 초기 설정 완료, 서버(FastAPI) 설정과 기능 개발 전**
 
 ## 주요 기능 (MVP)
 
@@ -26,11 +26,12 @@
 
 ## 기술 스택
 
-- Next.js 15 (App Router), React 19, TypeScript (strict)
-- Tailwind CSS
-- MySQL 8 + Drizzle ORM
-- Zod (입력값 검증)
-- Jest + React Testing Library (테스트)
+| 구분 | 기술 |
+|------|------|
+| 화면 | Next.js 15 (App Router), React 19, TypeScript (strict), Tailwind CSS, Zod |
+| 서버 | Python 3.12, FastAPI, Uvicorn, Pydantic v2 |
+| DB | PostgreSQL 16, SQLAlchemy 2.0, Alembic |
+| 테스트 | Jest + React Testing Library (화면), pytest (API) |
 
 ## 문서
 
@@ -39,7 +40,7 @@
 | [IDEA.md](docs/IDEA.md) | 처음 아이디어 |
 | [PRD.md](docs/PRD.md) | 목표, 기능 목록, 사용자 스토리, 성공 기준 |
 | [TRD.md](docs/TRD.md) | 기술 선택 이유, 구조, 데이터 흐름, API 규칙 |
-| [DATA_MODEL.md](docs/DATA_MODEL.md) | `todos` 테이블과 TypeScript 타입 |
+| [DATA_MODEL.md](docs/DATA_MODEL.md) | `todos` 테이블, TypeScript 타입, Pydantic 스키마 |
 | [API_SPEC.md](docs/API_SPEC.md) | API별 요청/응답 예시와 오류 |
 | [COMPONENT_SPEC.md](docs/COMPONENT_SPEC.md) | 컴포넌트 구조, Props, 화면 문구 |
 | [TEST_CASES.md](docs/TEST_CASES.md) | API·컴포넌트 테스트 케이스 |
@@ -48,19 +49,29 @@
 ## 폴더 구조
 
 ```
-app/              페이지와 API 라우트
-src/components/   화면 컴포넌트
-src/lib/          서버 로직, DB
-src/types/        공유 타입
-docs/             명세 문서
+app/                    페이지
+src/components/         화면 컴포넌트
+src/lib/                화면용 함수 (API 호출, 검증)
+src/types/              화면 타입
+__tests__/components/   화면 테스트
+backend/app/            FastAPI 앱 (예정)
+backend/tests/          API 테스트 (예정)
+docs/                   명세 문서
 ```
 
 ## 실행 방법
 
-개발을 시작하면 아래 명령을 사용합니다. (아직 코드가 없어 지금은 동작하지 않습니다)
+**화면 (Next.js)**
 
 ```bash
 npm install   # 패키지 설치
-npm run dev   # 개발 서버 실행
-npm test      # 테스트 실행
+npm run dev   # 개발 서버 실행 (http://localhost:3000)
+npm test      # 화면 테스트 실행
+```
+
+**서버 (FastAPI)** - 아직 설정 전입니다. 설정 후 `backend/` 폴더에서 실행합니다.
+
+```bash
+uvicorn app.main:app --reload --port 8000   # API 서버 실행 (http://localhost:8000/docs)
+pytest                                      # API 테스트 실행
 ```

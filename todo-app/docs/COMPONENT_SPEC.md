@@ -59,8 +59,8 @@ app/page.tsx (HomePage)            ← 페이지 껍데기
 | 화면이 처음 열릴 때 | `GET /api/todos` 호출 | 성공: `todos` 채우고 `ready` / 실패: `error` |
 | "다시 시도" 클릭 | `GET /api/todos` 다시 호출 | 위와 같음 |
 | `TodoForm`이 추가 요청 | `POST /api/todos` 호출 | 성공(`201`): 받은 할 일을 목록 맨 위에 넣고 `true` 반환 / 실패: `actionError` 설정, `false` 반환 |
-| `TodoItem`이 전환 요청 | `PATCH /api/todos/:id` 호출 | 성공(`200`): 해당 항목을 받은 값으로 바꿈 / 실패: `actionError` 설정 |
-| `TodoItem`이 삭제 요청 | `DELETE /api/todos/:id` 호출 | 성공(`204`): 목록에서 뺌 / 실패: `actionError` 설정 |
+| `TodoItem`이 전환 요청 | `PATCH /api/todos/{id}` 호출 | 성공(`200`): 해당 항목을 받은 값으로 바꿈 / 실패: `actionError` 설정 |
+| `TodoItem`이 삭제 요청 | `DELETE /api/todos/{id}` 호출 | 성공(`204`): 목록에서 뺌 / 실패: `actionError` 설정 |
 | 새 요청을 시작할 때 | `actionError`를 비움 | 이전 오류 배너가 사라짐 |
 
 - 실패 시 `actionError`에 넣는 문구
